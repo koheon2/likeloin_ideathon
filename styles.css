@@ -221,6 +221,56 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
 .legend, .legend-item { white-space: nowrap; }
 
 /* ============== Home / Timetable ============== */
+.import-card {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(360px, 1.2fr);
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.import-copy h2 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.import-sub,
+.import-current,
+.import-message {
+  color: var(--muted);
+  font-size: 12px;
+}
+.import-current {
+  margin-top: 8px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+.import-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+}
+.import-input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  padding: 10px 12px;
+  outline: none;
+}
+.import-input:focus {
+  border-color: var(--primary);
+}
+.import-submit:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+.import-message {
+  grid-column: 1 / -1;
+}
+.import-message.success { color: var(--primary-dark); }
+.import-message.error { color: var(--accent); }
 .today { margin-bottom: 32px; }
 .today-grid {
   display: grid;
@@ -242,6 +292,14 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
   border-radius: 0 0 4px 4px;
 }
 .today-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.today-empty {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+}
 .tc-time {
   font-weight: 800; font-size: 22px; letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
@@ -868,6 +926,10 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
 .badge-desc { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
 
 @media (max-width: 1180px) {
+  .import-card {
+    grid-template-columns: 1fr;
+  }
+
   .mp-grid {
     grid-template-columns: 1fr;
   }
@@ -878,8 +940,13 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
 }
 
 @media (max-width: 720px) {
+  .import-form {
+    grid-template-columns: 1fr;
+  }
+
   .me-id-stats,
-  .badge-grid {
+  .badge-grid,
+  .today-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -983,6 +1050,11 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
   font-size: 13px;
 }
 .topq-row:last-child { border-bottom: 0; }
+.topq-empty {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 18px 4px;
+}
 .topq-rank {
   width: 22px; height: 22px;
   background: var(--soft-line);

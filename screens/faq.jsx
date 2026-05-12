@@ -6,8 +6,13 @@ function FaqScreen({ onNav, charStyle, palette }) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const [expanded, setExpanded] = useState(null);
+  const courseById = courses.reduce((map, course) => {
+    map[course.id] = course;
+    return map;
+  }, {});
 
   const filtered = faqs.filter(f =>
+    courseById[f.courseId] &&
     (filter === 'all' || f.courseId === filter) &&
     (!query || f.text.toLowerCase().includes(query.toLowerCase()) || f.answer.toLowerCase().includes(query.toLowerCase()))
   );
@@ -43,7 +48,7 @@ function FaqScreen({ onNav, charStyle, palette }) {
 
       <div className="faq-list">
         {filtered.map(f => {
-          const c = courses.find(x => x.id === f.courseId);
+          const c = courseById[f.courseId];
           const open = expanded === f.id;
           return (
             <Card key={f.id} className={`faq-item ${open ? 'open' : ''}`} style={{ '--accent': c.color }}>
@@ -75,7 +80,7 @@ function FaqScreen({ onNav, charStyle, palette }) {
         {filtered.length === 0 && (
           <div className="empty">
             <div className="empty-emoji">🌿</div>
-            <div>"{query}"에 대한 질문이 아직 없어요.</div>
+            <div>{query ? `"${query}"에 대한 질문이 아직 없어요.` : '가져온 시간표에는 아직 쌓인 질문이 없어요.'}</div>
             <button className="pill primary" onClick={() => onNav('ask')}>그럼 내가 처음 물어볼까요?</button>
           </div>
         )}

@@ -62,7 +62,7 @@ function Sidebar({ active, onNav, charStyle, palette }) {
         <div className="me-card">
           <Character animal="rabbit" hue={200} size={40} style={charStyle} />
           <div>
-            <div className="me-name">김민서</div>
+            <div className="me-name">아기사자</div>
             <div className="me-sub">경영학과 · 22학번</div>
           </div>
         </div>

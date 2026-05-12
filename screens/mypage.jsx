@@ -18,7 +18,7 @@ function MypageScreen({ onNav, charStyle, palette }) {
           <div className="me-id-top">
             <Character animal="rabbit" hue={200} size={88} style={charStyle} />
             <div>
-              <div className="mei-name">김민서</div>
+              <div className="mei-name">아기사자</div>
               <div className="mei-sub">경영학과 22학번 · 4학기차</div>
               <div className="mei-row">
                 <span className="mei-pill">Lv.{Math.round(avgAffinity * 2)} 평균</span>

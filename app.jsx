@@ -82,8 +82,17 @@ function App() {
   const palette = PALETTES[tweaks.palette] || PALETTES.warm;
   const charStyle = tweaks.charStyle;
 
+  const [timetableSource, setTimetableSource] = useStateApp(() => window.TIMETABLE_IMPORT.loadImported());
   const [screen, setScreen] = useState('home');
   const [activeCourseId, setActiveCourseId] = useState('biz-stat');
+  const activeMock = React.useMemo(() => window.TIMETABLE_IMPORT.applyImported(timetableSource), [timetableSource]);
+  window.MOCK = activeMock;
+
+  React.useEffect(() => {
+    if (!window.MOCK.COURSES.some(course => course.id === activeCourseId)) {
+      setActiveCourseId(window.MOCK.COURSES[0] ? window.MOCK.COURSES[0].id : '');
+    }
+  }, [activeCourseId, timetableSource]);
 
   function nav(s, id) {
     setScreen(s);
@@ -97,6 +106,15 @@ function App() {
     } else {
       setScreen('home');
     }
+  }
+
+  function applyTimetableSource(source) {
+    if (source) {
+      window.TIMETABLE_IMPORT.saveImported(source);
+    } else {
+      window.TIMETABLE_IMPORT.clearImported();
+    }
+    setTimetableSource(source);
   }
 
   // Apply CSS vars from palette
@@ -119,7 +137,16 @@ function App() {
     <div className="app" style={cssVars}>
       <Sidebar active={screen} onNav={s => setScreen(s)} charStyle={charStyle} palette={palette} />
       <main className="main" data-screen-label={screen}>
-        {screen === 'home' && <HomeScreen onNav={nav} onPickCourse={pickCourse} charStyle={charStyle} palette={palette} />}
+        {screen === 'home' && (
+          <HomeScreen
+            onNav={nav}
+            onPickCourse={pickCourse}
+            charStyle={charStyle}
+            palette={palette}
+            timetableSource={timetableSource}
+            onTimetableSourceChange={applyTimetableSource}
+          />
+        )}
         {screen === 'chat' && <ChatScreen courseId={activeCourseId} onPickCourse={pickCourse} charStyle={charStyle} palette={palette} />}
         {screen === 'profile' && <ProfileScreen courseId={activeCourseId} onPickCourse={(id) => setActiveCourseId(id || activeCourseId)} onNav={nav} charStyle={charStyle} palette={palette} />}
         {screen === 'ask' && <AskScreen onNav={nav} charStyle={charStyle} palette={palette} />}

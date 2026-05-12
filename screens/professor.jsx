@@ -3,8 +3,19 @@
 function ProfessorScreen({ onNav, charStyle, palette }) {
   const s = window.MOCK.PROF_STATS;
   const courses = window.MOCK.COURSES;
-  const course = courses.find(c => c.name === s.course);
-  const maxPart = Math.max(...s.participation.map(p => p.value));
+  const course = courses.find(c => c.name === s.course) || courses[0];
+  const stats = course && course.name === s.course ? s : {
+    ...s,
+    course: course ? course.name : '수업',
+    students: 0,
+    weeklyQuestions: 0,
+    weeklyDelta: 0,
+    repeatedRate: 0,
+    avgResponseTime: '-',
+    participation: s.participation.map(p => ({ ...p, value: 0 })),
+    topQuestions: [],
+  };
+  const maxPart = Math.max(1, ...stats.participation.map(p => p.value));
 
   return (
     <div className="prof-screen">
@@ -22,20 +33,22 @@ function ProfessorScreen({ onNav, charStyle, palette }) {
       <div className="prof-head-card">
         <Character animal={course.professor.animalKey} hue={course.professor.hue} size={64} style={charStyle} />
         <div>
-          <div className="phc-course">{s.course}</div>
-          <div className="phc-meta">학생 {s.students}명 · 이번 주 질문 {s.weeklyQuestions}건 (지난 주 대비 +{s.weeklyDelta})</div>
+          <div className="phc-course">{stats.course}</div>
+          <div className="phc-meta">학생 {stats.students}명 · 이번 주 질문 {stats.weeklyQuestions}건 (지난 주 대비 +{stats.weeklyDelta})</div>
         </div>
         <div className="phc-actions">
-          <select className="select"><option>{s.course}</option><option>유기화학</option><option>경영전략</option></select>
+          <select className="select">
+            {courses.map(c => <option key={c.id}>{c.name}</option>)}
+          </select>
           <button className="pill ghost">주차 변경</button>
         </div>
       </div>
 
       <div className="prof-grid">
         {/* KPI tiles */}
-        <Card className="kpi"><div className="kpi-lab">이번 주 질문</div><div className="kpi-num">{s.weeklyQuestions}</div><div className="kpi-delta up">▲ +{s.weeklyDelta} 지난주 대비</div></Card>
-        <Card className="kpi"><div className="kpi-lab">반복 질문 비율</div><div className="kpi-num">{s.repeatedRate}%</div><div className="kpi-delta down">AI가 자동 답변 처리</div></Card>
-        <Card className="kpi"><div className="kpi-lab">평균 응답 시간</div><div className="kpi-num">{s.avgResponseTime}</div><div className="kpi-delta">학과 평균보다 빠름</div></Card>
+        <Card className="kpi"><div className="kpi-lab">이번 주 질문</div><div className="kpi-num">{stats.weeklyQuestions}</div><div className="kpi-delta up">▲ +{stats.weeklyDelta} 지난주 대비</div></Card>
+        <Card className="kpi"><div className="kpi-lab">반복 질문 비율</div><div className="kpi-num">{stats.repeatedRate}%</div><div className="kpi-delta down">AI가 자동 답변 처리</div></Card>
+        <Card className="kpi"><div className="kpi-lab">평균 응답 시간</div><div className="kpi-num">{stats.avgResponseTime}</div><div className="kpi-delta">학과 평균보다 빠름</div></Card>
         <Card className="kpi"><div className="kpi-lab">호감도 평균</div><div className="kpi-num">Lv.4.2</div><div className="kpi-delta up">▲ 0.6 학기 시작 대비</div></Card>
 
         {/* Participation chart */}
@@ -45,7 +58,7 @@ function ProfessorScreen({ onNav, charStyle, palette }) {
             <span className="muted">질문 + 답변 확인 + 복습 합계</span>
           </div>
           <div className="bars">
-            {s.participation.map(p => (
+            {stats.participation.map(p => (
               <div key={p.week} className="bar-wrap">
                 <div className="bar" style={{ height: `${(p.value / maxPart) * 100}%`, background: course.color }}>
                   <span className="bar-num">{p.value}</span>
@@ -63,7 +76,7 @@ function ProfessorScreen({ onNav, charStyle, palette }) {
             <button className="pill ghost small">모두 보기</button>
           </div>
           <div className="topq-list">
-            {s.topQuestions.map((q, i) => (
+            {stats.topQuestions.map((q, i) => (
               <div key={i} className="topq-row">
                 <div className="topq-rank">{i + 1}</div>
                 <div className="topq-text">{q.text}</div>
@@ -71,6 +84,9 @@ function ProfessorScreen({ onNav, charStyle, palette }) {
                 <div className={`topq-status ${q.status === '답변 필요' ? 'urgent' : q.status === 'AI가 안내함' ? 'ai' : 'done'}`}>{q.status}</div>
               </div>
             ))}
+            {stats.topQuestions.length === 0 && (
+              <div className="topq-empty">가져온 시간표에는 아직 집계된 질문이 없어요.</div>
+            )}
           </div>
         </Card>
 

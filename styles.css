@@ -812,8 +812,10 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
 .stamp-card h3 { font-size: 15px; }
 .stamp-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: 18px repeat(4, 74px);
   gap: 4px;
+  min-width: 0;
 }
 .stamp-d {
   text-align: center;
@@ -822,12 +824,13 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
   font-weight: 700;
 }
 .stamp-cell {
-  aspect-ratio: 1;
   border-radius: 8px;
   background: var(--soft-line);
   display: flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 700;
   color: var(--muted);
+  min-width: 0;
+  min-height: 0;
 }
 .stamp-cell.done { background: color-mix(in oklab, var(--primary) 35%, white); color: var(--primary-dark); }
 .stamp-cell.star { background: var(--secondary); color: var(--text); font-size: 14px; }
@@ -863,6 +866,38 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; }
 .badge-icon { font-size: 28px; margin-bottom: 6px; }
 .badge-name { font-weight: 700; font-size: 12px; }
 .badge-desc { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+
+@media (max-width: 1180px) {
+  .mp-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stamp-grid {
+    grid-template-rows: 18px repeat(4, 64px);
+  }
+}
+
+@media (max-width: 720px) {
+  .me-id-stats,
+  .badge-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stamp-card .card-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stamp-grid {
+    grid-template-rows: 16px repeat(4, 48px);
+    gap: 3px;
+  }
+
+  .stamp-cell {
+    border-radius: 6px;
+  }
+}
 
 /* ============== Professor view ============== */
 .prof-screen { display: flex; flex-direction: column; gap: 20px; }

@@ -145,39 +145,42 @@ const COURSES = [
 const DAYS = ['월', '화', '수', '목', '금'];
 const HOURS = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00'];
 
-// Chat messages for the AI-and-Society room (mix of student/prof/AI)
+// Chat messages — 1:1 between THIS student and the professor.
+// Student is anonymized to the professor as "익명 #A3F2".
+// AI nudges may reference aggregate insights across rooms but never reveal identities.
 const SAMPLE_THREAD = [
   {
     id: 'm1',
     author: 'student',
-    name: '이서연',
+    name: '나',
+    anonHandle: '익명 #A3F2', // shown to professor
+    isMe: true,
     text: '교수님, 다음 주 발표 주제로 \'AI의 저작권 문제\' 잡아도 괜찮을까요?',
     time: '어제 18:42',
-    affinityGain: null,
   },
   {
     id: 'm2',
-    author: 'ai-proxy', // AI relaying for professor not yet joined
+    author: 'ai-proxy',
     name: '여우 교수님 (AI 임시 답변)',
-    text: '좋은 주제예요! 저작권 쪽은 사례가 빠르게 바뀌고 있어서, 발표 일주일 전 기준으로 가장 최근 판례 한두 개를 꼭 같이 보면 좋을 거예요. 미국 사례(Anthropic, OpenAI 소송)와 국내 사례를 비교해보는 것도 추천해요.',
+    text: '좋은 주제예요! 저작권 쪽은 사례가 빠르게 바뀌고 있어서, 발표 일주일 전 기준으로 최근 판례 한두 개를 같이 보면 좋을 거예요. 미국 사례(Anthropic, OpenAI 소송)와 국내 사례를 비교하는 흐름을 추천해요.',
     time: '어제 18:43',
-    affinityGain: null,
     aiNote: '교수님이 아직 가입 전이라 AI가 임시로 답변했어요. 가입 후 답변이 갱신될 수 있어요.',
   },
   {
     id: 'm3',
     author: 'student',
-    name: '박재훈',
-    text: '저는 \'생성형 AI와 학습 데이터\' 주제 잡으려고 했는데, 너무 광범위할까요?',
+    name: '나',
+    isMe: true,
+    text: '아 좋아요! 그럼 발표 자료 분량은 어느 정도가 적당할까요?',
     time: '오늘 09:12',
   },
   {
     id: 'm4',
     author: 'ai-summary',
     name: '대나무의숲 AI',
-    text: '이전에 비슷한 질문이 있었어요 — "주제 범위 설정" 관련해서 교수님께서 \"문제를 한 문장으로 적을 수 있을 정도로 좁히기\"를 권하신 적 있어요. 그걸 먼저 시도해보고 막히면 다시 물어보는 걸 추천해요.',
+    text: '이전에 같은 수업에서 비슷한 질문이 3번 있었어요. 교수님께서 "10분 발표 기준 슬라이드 8장 내외, 핵심 질문 한 개를 명확히"라고 답하셨습니다. 이 답변으로 충분한가요?',
     time: '오늘 09:12',
-    aiNote: '비슷한 질문(3건)을 바탕으로 미리 정리한 답변이에요.',
+    aiNote: '비슷한 질문(3건) 답변을 바탕으로 먼저 안내했어요.',
   },
   {
     id: 'm5',
@@ -262,16 +265,24 @@ const PROF_STATS = {
   weeklyDelta: +6,
   repeatedRate: 41, // % of questions that were already answered before
   avgResponseTime: '2.4시간',
+  // Each question carries an anonymous handle — professor never sees real names.
   topQuestions: [
-    { text: '중심극한정리 증명이 시험에 나오나요?', count: 12, status: '답변 완료' },
-    { text: '회귀분석 가정 4가지가 헷갈려요', count: 9, status: '답변 완료' },
-    { text: '엑셀 데이터 분석 도구 어디서 설치?', count: 7, status: 'AI가 안내함' },
-    { text: '과제 2번 데이터 어디서 받나요?', count: 5, status: '답변 필요' },
+    { text: '중심극한정리 증명이 시험에 나오나요?', count: 12, status: '답변 완료', handle: '익명 #B7C1 외 11명' },
+    { text: '회귀분석 가정 4가지가 헷갈려요', count: 9, status: '답변 완료', handle: '익명 #91D4 외 8명' },
+    { text: '엑셀 데이터 분석 도구 어디서 설치?', count: 7, status: 'AI가 안내함', handle: '익명 #2A0F 외 6명' },
+    { text: '과제 2번 데이터 어디서 받나요?', count: 5, status: '답변 필요', handle: '익명 #A3F2 외 4명' },
   ],
   participation: [
     { week: 'W1', value: 18 }, { week: 'W2', value: 22 }, { week: 'W3', value: 31 },
     { week: 'W4', value: 28 }, { week: 'W5', value: 35 }, { week: 'W6', value: 41 },
     { week: 'W7', value: 38 }, { week: 'W8', value: 47 },
+  ],
+  // Recent anonymous questions awaiting reply (for dashboard inbox)
+  inbox: [
+    { handle: '익명 #A3F2', text: '과제 2번 데이터 어디서 받나요?', time: '12분 전', priority: 'urgent' },
+    { handle: '익명 #7C09', text: '오늘 강의 11쪽 회귀계수 해석이 헷갈려요', time: '34분 전', priority: 'normal' },
+    { handle: '익명 #DD81', text: '중간고사 범위 챕터 5까지 맞나요?', time: '1시간 전', priority: 'normal' },
+    { handle: '익명 #56AE', text: '발표 조 변경 가능한가요?', time: '2시간 전', priority: 'normal' },
   ],
 };
 

@@ -14,6 +14,7 @@ function ProfessorScreen({ onNav, charStyle, palette }) {
     avgResponseTime: '-',
     participation: s.participation.map(p => ({ ...p, value: 0 })),
     topQuestions: [],
+    inbox: [],
   };
   const maxPart = Math.max(1, ...stats.participation.map(p => p.value));
 
@@ -86,6 +87,27 @@ function ProfessorScreen({ onNav, charStyle, palette }) {
             ))}
             {stats.topQuestions.length === 0 && (
               <div className="topq-empty">가져온 시간표에는 아직 집계된 질문이 없어요.</div>
+            )}
+          </div>
+        </Card>
+
+        {/* Anonymous inbox */}
+        <Card className="inbox-card">
+          <div className="card-head">
+            <h3>익명 질문 받은편지함</h3>
+            <span className="muted">학생 이름은 익명 핸들로만 보여요</span>
+          </div>
+          <div className="inbox-list">
+            {stats.inbox.map((q, i) => (
+              <div key={i} className={`inbox-row ${q.priority}`}>
+                <div className="inbox-handle">{q.handle}</div>
+                <div className="inbox-text">{q.text}</div>
+                <div className="inbox-time">{q.time}</div>
+                <button className="pill primary small" style={{ background: course.color }}>답하기</button>
+              </div>
+            ))}
+            {stats.inbox.length === 0 && (
+              <div className="topq-empty">가져온 시간표에는 아직 받은 질문이 없어요.</div>
             )}
           </div>
         </Card>

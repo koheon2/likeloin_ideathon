@@ -58,11 +58,15 @@ function ChatScreen({ courseId, onPickCourse, charStyle, palette }) {
         <div className="chat-head-info">
           <Character animal={course.professor.animalKey} hue={course.professor.hue} size={48} style={charStyle} />
           <div>
-            <div className="ch-title">{course.name}</div>
-            <div className="ch-sub">
+            <div className="ch-title">
               {course.professor.name} {course.professor.title}
+              <span className="ch-tiny">· 1:1 대화방</span>
+            </div>
+            <div className="ch-sub">
+              {course.name}
               {!course.professor.joined && <span className="tag tag-ai">AI 임시 응답 중</span>}
               {course.professor.joined && <span className="tag tag-live">답변 평균 2시간</span>}
+              <span className="tag tag-anon">교수에게 익명 #A3F2 로 보임</span>
             </div>
           </div>
         </div>
